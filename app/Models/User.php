@@ -6,10 +6,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasApiTokens;
     protected $fillable = [
         'full_name', 'password', 'email', 'phone_number', 'avatar', 'role', 'address', 'date_of_birth'
     ];
@@ -26,5 +29,13 @@ class User extends Authenticatable
     public function bills()
     {
         return $this->hasMany(Bill::class, 'id_user');
+    }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
