@@ -176,7 +176,7 @@ class AuthController extends Controller
             'password'=>'required|string|min:6|confirmed'
         ]);
         $user = User::find($request->id);
-        $user->password = $request->password;
+        $user->password =bcrypt($request->password);
         $user->save();
         return "<h1>Your password has been reset successfully!</h1>";
         
