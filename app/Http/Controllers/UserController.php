@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    // Lấy thông tin cá nhân của người dùng
+    public function dashboard()
+    {
+        return response()->json([
+            'message' => 'Welcome to the User Dashboard',
+            'user' => auth()->user()
+        ]);
+    }
     public function getUserDetails(Request $request)
     {
         $user = Auth::user();
@@ -21,7 +27,6 @@ class UserController extends Controller
         ], 200);
     }
 
-    // Cập nhật thông tin cá nhân của người dùng
     public function updateUserProfile(Request $request)
     {
         $user = Auth::user();

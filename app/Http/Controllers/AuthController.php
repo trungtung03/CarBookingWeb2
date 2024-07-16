@@ -61,44 +61,60 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-       try {
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]
-        );
-
-        if ($validateUser->fails()) {
+        try {
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'email' => 'required|email',
+                    'password' => 'required'
+                ]
+            );
+    
+            if ($validateUser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validateUser->errors()
+                ], 401);
+            }
+    
+            if (!Auth::attempt($request->only(['email', 'password']))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email & Password do not match with our records.',
+                ], 401);
+            }
+    
+            $user = Auth::user();
+    
+            if (!$user->is_verified) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Please verify your email before logging in.'
+                ], 403);
+            }
+    
+            $roleMessage = '';
+            $dashboardUrl = '';
+    
+            if ($user->role === 'admin') {
+                $roleMessage = 'Admin Logged In Successfully';
+                $dashboardUrl = route('admin.dashboard');
+            } elseif ($user->role === 'driver') {
+                $roleMessage = 'Driver Logged In Successfully';
+                $dashboardUrl = route('driver.dashboard'); // Assuming you have a route for driver dashboard
+            } elseif ($user->role === 'user') {
+                $roleMessage = 'User Logged In Successfully';
+                $dashboardUrl = route('user.dashboard'); // Assuming you have a route for user dashboard
+            }
+    
             return response()->json([
-                'status' => false,
-                'message' => 'validation error',
-                'errors' => $validateUser->errors()
-            ], 401);
-        }
-
-        if (!Auth::attempt($request->only(['email', 'password']))) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Email & Password do not match with our records.',
-            ], 401);
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user->is_verified) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Please verify your email before logging in.'
-            ], 403);
-        }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User Logged In Successfully',
-            'token' => $user->createToken("API TOKEN")->plainTextToken
-        ], 200);
+                'status' => true,
+                'email' => $user->email,
+                'message' => $roleMessage,
+                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'dashboard_url' => $dashboardUrl
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -106,7 +122,8 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
+    
+    
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
