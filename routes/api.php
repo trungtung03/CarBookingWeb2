@@ -15,6 +15,11 @@ Route::group(['middleware'=>'api'],function($routes){
     Route::get('/send-verify-mail/{email}', [AuthController::class, 'sendVerifyMail']);
     Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
 });
+Route::group(['middleware' => ['web']], function () {
+    Route::get('auth/google', [LoginController::class, 'redirectToGoogle']);
+    Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback']);
+    Route::get('auth/success', [LoginController::class, 'authSuccess']);
+});
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/details', [UserController::class, 'getUserDetails']);
     Route::post('/user/update-profile', [UserController::class, 'updateUserProfile']);
@@ -22,7 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
