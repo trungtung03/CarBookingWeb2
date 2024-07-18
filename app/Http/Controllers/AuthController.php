@@ -42,7 +42,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => 'user',
                 'address' => 'Earth',
-                'is_verified' => false
+                'is_verified' => false,
                 'phone_number' => $request->phone_number,
             ]);
 

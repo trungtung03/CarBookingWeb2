@@ -7,6 +7,7 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Admin\CarController;
 
 // Routes for authentication
 Route::group(['middleware' => 'api'], function ($routes) {
@@ -38,7 +39,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'index']);
@@ -46,6 +46,12 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::put('/admin/users/{id}', [AdminController::class, 'update']);
     Route::delete('/admin/users/{id}', [AdminController::class, 'destroy']);
 });       
+Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
+    Route::get('/admin/cars', [CarController::class, 'index']);
+    Route::post('/admin/cars', [CarController::class, 'store']);
+    Route::put('/admin/cars/{id}', [CarController::class, 'update']);
+    Route::delete('/admin/cars/{id}', [CarController::class, 'destroy']);
+});
 Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
 Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
 
