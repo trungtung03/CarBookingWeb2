@@ -40,10 +40,10 @@ class AuthController extends Controller
                 'full_name' => $request->full_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'phone_number' => '012345678',
                 'role' => 'user',
                 'address' => 'Earth',
                 'is_verified' => false
+                'phone_number' => $request->phone_number,
             ]);
 
             $this->sendVerifyMail($user->email);
@@ -124,7 +124,6 @@ class AuthController extends Controller
     }
     
 
-    
     
     public function logout(Request $request)
     {
