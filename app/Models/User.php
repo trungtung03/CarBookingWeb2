@@ -13,8 +13,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject,MustVerifyEmail
 {
     use HasFactory, Notifiable,HasApiTokens;
+
     protected $fillable = [
-        'full_name', 'password', 'email', 'phone_number', 'avatar', 'role', 'address', 'date_of_birth','is_verified'
+       'full_name', 'password', 'email', 'phone_number', 'avatar', 'role', 'address', 'date_of_birth','is_verified'
     ];
 
     protected $hidden = [

@@ -102,7 +102,7 @@ class AuthController extends Controller
                 $dashboardUrl = route('admin.dashboard');
             } elseif ($user->role === 'driver') {
                 $roleMessage = 'Driver Logged In Successfully';
-                $dashboardUrl = route('driver.dashboard'); 
+                $dashboardUrl = route('driver.dashboard');
             } elseif ($user->role === 'user') {
                 $roleMessage = 'User Logged In Successfully';
                 $dashboardUrl = route('user.dashboard');
@@ -122,7 +122,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
+    
 
     
     
